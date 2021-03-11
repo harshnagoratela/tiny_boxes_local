@@ -1,0 +1,7 @@
+[build]
+command = "npm i && npm run production"
+publish = "dist"
+functions = "lambda"
+
+[dev]
+command = "npm run dev"
