@@ -1,0 +1,42 @@
+.DS_Store
+node_modules
+/dist
+/build
+/lambda
+/artifacts
+
+/tests/e2e/videos/
+/tests/e2e/screenshots/
+
+# env files
+.env
+.env.local
+.env.*.local
+
+# images
+/src/*.png
+/src/*.gif
+
+# Secrets
+secrets.json
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.openzeppelin/.session
+
+# Local Netlify folder
+.netlify
+.openzeppelin/.lock
+bot/secrets.txt
