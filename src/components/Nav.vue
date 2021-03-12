@@ -23,7 +23,7 @@
     v-app-bar(app color="primary" dark)
       router-link(to="/")
         v-img.logo.mt-2(src="/img/logo.png" width="55" height="55")
-      v-spacer
+      v-spacer      
       .link(v-for="l in barLinks")
         v-btn(v-if="l.type === 'page'" :to="l.path" text)
           span.mr-2 {{ l.text }}
@@ -31,6 +31,18 @@
           v-icon {{ l.icon }}
         v-btn(v-else-if="l.type === 'link'" :href="l.path" target="_blank" icon)
           v-icon {{ l.icon }}
+      <div class="link">
+        <button type="button" v-if="! userSession.isUserSignedIn()" title="Login" @click.prevent="signIn" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default">
+        <span class="v-btn__content">
+        <i aria-hidden="true" class="v-icon notranslate mdi mdi-login theme--dark"></i>
+        </span>
+        </button>
+        <button type="button" v-if=" userSession.isUserSignedIn()" title-"Logout" @click.prevent="signOut" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default">
+        <span class="v-btn__content">
+        <i aria-hidden="true" class="v-icon notranslate mdi mdi-logout theme--dark"></i>
+        </span>
+        </button>        
+      </div>
       v-tooltip(v-if="web3Status === 'active'" bottom)
         template(v-slot:activator="{ on }")
           Gravatar.gravatar.gravatar-desktop(v-on="on" :size="40" :email="currentAccount")
@@ -50,14 +62,44 @@
 import Vue from "vue";
 import { mapGetters, mapState } from "vuex";
 import Gravatar from "vue-gravatar";
+import { userSession } from '../store/userSession'
+import { showConnect } from '@stacks/connect'
 
 Vue.component("v-gravatar", Gravatar);
 
 export default {
   components: { Gravatar },
+  created () {
+    this.userSession = userSession
+  },
   methods: {
     formatAccount(account) {
       return "0x" + account.slice(2, 6) + "...." + account.slice(-4);
+    },
+    signIn () {
+      if (userSession.isUserSignedIn()) {
+        alert("user is already signIn");
+        return;
+      }
+      console.log("** window.location.origin + '/my-app-logo.svg'",window.location.origin + '/my-app-logo.svg')
+      showConnect({
+        appDetails: {
+          name: 'Tiny-Boxes',
+          icon: window.location.origin + '/favicon.png',
+        },
+        redirectTo: '/',
+        finished: () => {
+          const userData = userSession.loadUserData();          
+          console.log("****** postlogin userData",userData)
+          // Save or otherwise utilize userData post-authentication
+          window.location.reload();
+        },
+        userSession: userSession,
+      });
+    },
+    signOut() {
+      //userSession.signUserOut();
+      userSession.signUserOut(window.location.href)
     },
   },
   mounted: async function() {
@@ -124,7 +166,7 @@ export default {
         icon: "mdi-typewriter",
         text: "Blog",
         path: "https://medium.com/@nonfungibleteam"
-      },
+      },      
     ]
   }),
   computed: {
