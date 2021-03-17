@@ -1589,7 +1589,7 @@ const store = new Vuex.Store({
       });
     },
     loadAccount(context) {
-      return new Promise((resolve, reject) => {        
+      return new Promise((resolve, reject) => {
         const web3: any = context.state.web3;
         if (web3 !== null) {
           web3.eth.getAccounts((err: any, resp: any) => {
